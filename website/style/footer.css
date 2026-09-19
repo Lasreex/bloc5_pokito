@@ -1,0 +1,163 @@
+body{
+    background-color: #17002d;
+     font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+     
+}
+
+.footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.t1{
+    color: #ffc840;
+    font-size: 24px;
+}
+
+.t2{
+    color: #ffc840;
+    font-size: 24px;
+}
+
+.t3{
+    color: #ffc840;
+    font-size: 24px;
+}
+
+
+.horizontal{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+}
+
+
+.navigation{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rs{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.contact{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.Logo{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.Logo img{
+    width: 80%;
+}
+
+
+
+.logos{
+    display: flex;
+    flex-wrap: wrap;
+    width: 250px;
+    height: 300px;
+    justify-content: space-around;
+}
+
+.logo1{
+    margin: 16px;
+}
+.logo2{
+    margin: 16px;
+}
+.logo3{
+    margin: 16px;
+}
+.logo4{
+    margin: 16px;
+}
+
+.logo1 img, .logo2 img, .logo3 img, .logo4 img {
+        width: 60px; /* Réduction de la taille des images des logos pour les petits écrans */
+        height: auto;
+    }
+
+.dcr{
+    color: white;
+    font-size: 16px;
+}
+
+.mail{
+    color: white;
+    font-size: 16px;
+}
+
+@media  screen and (max-width: 1230px) {
+    .horizontal{
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+    }
+}
+
+@media  screen and (max-width: 430px) {
+    .horizontal {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px; /* Espace entre chaque bloc vertical */
+    }
+
+    /* Réduction des titres de sections */
+    .t1, .t2, .t3 {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    /* Réduction des textes (mail, description) */
+    .dcr, .mail {
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* Ajustement de la grille des logos sociaux */
+    .logos {
+        width: 100%; /* Prend toute la largeur disponible */
+        max-width: 280px; /* Évite que ce soit trop large sur grand téléphone */
+        height: auto; /* Laisse la hauteur s'adapter au contenu */
+        justify-content: center;
+    }
+
+    /* Réduction des marges autour des petits logos */
+    .logo1, .logo2, .logo3, .logo4  {
+        margin: 10px;
+        /*height: 20px;
+        width: auto;*/ /* Réduction de la taille des logos pour les petits écrans */
+        
+    }
+    
+    /* Optionnel : ajuster la navigation pour mobile */
+    .navigation {
+        gap: 10px;
+    }
+
+    .logo1 img, .logo2 img, .logo3 img, .logo4 img {
+        width: 50px; /* Réduction de la taille des images des logos pour les petits écrans */
+        height: auto;
+    }
+
+    .horizontal {
+        margin-bottom: 70px; /* Réduction de l'espace entre les blocs sur mobile */
+    }
+
+}

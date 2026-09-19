@@ -1,0 +1,316 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+.regles {
+    margin-top: 50px;
+    padding-top: 30px;
+    margin-bottom: 100px;
+    width: 100%;
+    display: flex;
+}
+
+.Hand {
+    position : relative;
+    outline: 3px solid  #fff4dc;
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #fff4dc;
+    border-radius: 20px;
+    width: fit-content;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 33px;
+    padding-right: 34px;
+
+}
+
+.Hand img {
+    top: -20px;
+    left: -20px;
+    width: 80%;
+    height: auto;
+}
+
+.Num {
+    position: absolute;
+    outline: 2px solid #4F008C;
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    border-radius: 100px;
+    width: 60px;
+    height: auto;
+    padding: 3px;
+    font-size: 48px;
+    top: -75px;
+    left: -35px;
+    color: #4F008C;
+    background-color: white;
+    transform: rotate(-4.6deg);
+    font-weight: 900;
+}
+
+.Regles {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-left: 0px;
+    padding-right: 0px;
+    gap: 20px;
+    width: 100%;
+    column-gap: 200px;
+    row-gap: 30px;
+}
+
+.regles {
+    margin-top: 50px;
+    padding-top: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.Fleur {
+    width: 80px;
+    height: auto;
+}
+
+.regles h2{
+    text-align: center;
+    color: #FFC840;
+    font-size: 40px;
+}
+
+.regles body {
+    background-color: #17002d;
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 300;
+}
+
+.Retourne {
+    transform: rotate(180deg);
+}
+
+.Titre {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    text-emphasis-color: #FFC840;
+}
+
+.BasRegles {
+    color: #fff4dc;
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    justify-items: center;
+    align-items: center;
+    margin-top: 5px;
+    padding-top: 5px;
+}
+
+.Texte {
+    font-size: clamp(12px, 2.5vw, 18px);
+    text-align: center;
+    width: 80%;
+    align-self: center;
+}
+
+.boutonJouerRegle {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap : 20px;
+    width: 100%;
+}
+
+.boutonJR{
+    display: flex;
+    color: #ffc840;
+    border: solid 3px #ffc840;
+    background-color: none;
+    justify-self: center;
+    justify-content: center;
+    align-items: center;
+    width: 357px;
+    height: 74px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 500;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+    padding: 10px 20px;
+}
+
+.boutonJouerRegle img {
+    width: 110px;
+    height: auto;
+    align-self: center;
+
+}
+
+.boutonJR:hover {
+    background-color: #FFC840;
+    color: black;
+    cursor: pointer;
+}
+
+.Hand {
+    width: 90%; 
+    max-width: 400px; 
+    box-sizing: border-box; 
+    margin: 0 auto 30px auto; 
+    padding: 25px 10px 10px 10px; 
+  }
+
+  .Hand img {
+    width: 100%; 
+    height: auto; 
+    display: block; 
+    margin: 0 auto;
+    top: 0; 
+    left: 0; 
+  }
+
+  .Hand p:not(.Num) {
+    font-size: 14px; 
+    margin-top: 12px;
+    margin-bottom: 0;
+  }
+
+    .Num {
+        width: 20px;
+        height: auto;
+        border-radius: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 24px;
+        top: -55px;
+        left: -5px;
+    }
+
+    .boutonJouerRegle img {
+        display: none;
+    }
+
+@media screen and (max-width: 1230px) {
+    .boutonJR {
+        color: #FFC840;
+        border: solid 3px #FFC840;
+        background-color: transparent;
+        justify-self: center;
+        width: 100%;
+        height: 50%;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 16px 56px;
+        border-radius: 50px;
+    }
+
+    .regles .b1 {
+        max-width: 260px;
+    }
+
+    .Regles {
+        display: flex;
+        align-items: center;
+    }
+
+    .Hand {
+    width: 90%; 
+    max-width: 400px; 
+    box-sizing: border-box; 
+    margin: 0 auto 30px auto; 
+    padding: 25px 10px 10px 10px; 
+  }
+
+  .Hand img {
+    width: 100%; 
+    height: auto; 
+    display: block; 
+    margin: 0 auto;
+    top: 0; 
+    left: 0; 
+  }
+
+  .Hand p:not(.Num) {
+    font-size: 14px; 
+    margin-top: 12px;
+    margin-bottom: 0;
+  }
+
+    .Num {
+        width: 20px;
+        height: auto;
+        border-radius: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 24px;
+        top: -55px;
+        left: -5px;
+    }
+    
+}
+
+@media screen and (max-width: 430px) {
+    .Titre img {
+        display: none;
+    }
+
+    .Titre h2 {
+        font-size: 32px;
+    }
+
+    .Regles {
+        display: flex;
+        align-items: center;
+    }
+
+    .Hand {
+    width: 90%; 
+    max-width: 400px; 
+    box-sizing: border-box; 
+    margin: 0 auto 30px auto; 
+    padding: 25px 10px 10px 10px; 
+  }
+
+  .Hand img {
+    width: 100%; 
+    height: auto; 
+    display: block; 
+    margin: 0 auto;
+    top: 0; 
+    left: 0; 
+  }
+
+  .Hand p:not(.Num) {
+    font-size: 14px; 
+    margin-top: 12px;
+    margin-bottom: 0;
+  }
+
+    .Num {
+        width: 20px;
+        height: auto;
+        border-radius: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 24px;
+        top: -55px;
+        left: -5px;
+    }
+
+
+
+    .boutonJouerRegle img {
+        display: none;
+    }
+
+
+
+}

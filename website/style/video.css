@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
+
+.Video {
+  margin-top: 80px;
+  font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.Video img {
+  height: 385px;
+  width: auto;
+}
+
+.video {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0px;
+  margin-bottom: 50px;
+  align-items: center;
+  width: 100%;
+}
+
+.carré {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(206, 206, 206);
+  border-radius: 28px;
+  min-width: 712px;
+  width: 50%;
+  height: 500px;
+}
+
+.notif {
+  display: flex;
+  position: absolute;
+  font-weight: 900;
+  font-size: 23.13px;
+  min-width: 318.45px;
+  color: #d1006e;
+  top: -3%;
+  left: -8%;
+  text-align: center;
+  padding: 10px;
+  transform: rotate(-5deg);
+  outline: 2px solid #4f008c;
+  background-color: #ffffff;
+  border-radius: 28px;
+  width: fit-content;
+} 
+
+.box20{
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (max-width: 1186px) {
+  .Video img {
+  display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+    .notif {
+    left: -3%;
+  }
+
+  .carré {
+    min-width: 300px;
+    width: 80%;
+    height: 500px;
+    padding: 20px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .notif {
+    left: -3%;
+  }
+
+  .Video .b2 {
+      max-width: 260px;
+      max-height: 58px;
+    }
+
+  .carré {
+    min-width: 300px;
+    width: 80%;
+    height: auto; 
+    aspect-ratio: 712 / 500; 
+    
+    padding: 20px;
+  }
+}
+
+@media screen and (max-width: 430px) {
+    .carré {
+      min-width: 250px;
+      width: 80%;
+      height: auto;
+
+    }
+
+    .Video .b2 {
+      max-width: 260px;
+    }
+
+    .notif {
+      left: -3%;
+      font-size: 16px;
+      width: fit-content;
+      min-width: 2px;
+      padding: 4px;
+    }
+}

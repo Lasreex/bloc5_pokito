@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.intro {
+    background-color: #2b0036;
+    background-image: url('assets/Fond_Hero.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+    font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    overflow-x: hidden;
+    height: 100vh;
+    margin-top: 0px;
+}
+
+
+
+.PositionImg {
+  display: flex;
+  justify-content: center;
+  width: 900px;
+  height: 329px;
+  position: relative;
+}
+.PositionImg  img{
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.Cartes,
+.video,
+.règles,
+.footer {
+    margin-top: 20px;
+}
+
+.intro {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.total{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0px;
+}
+
+.b1,
+.b2{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 56px;
+    border-radius: 9999px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    min-width: 230px;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
+
+    
+
+}
+
+
+.bb{
+    display:flex;
+    gap: 45px;
+}
+
+.b1{
+    color: #FFC840;
+    border: solid 3px #FFC840;
+    background-color: transparent;
+    justify-self: center;
+    width: auto;
+    height: 64px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 500;
+    padding: 10px 40px;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+}
+
+.b2{
+    color: white;
+    border: solid 3px #d1006e;
+    background-color: #d1006e;
+    justify-self: center;
+    width: 300px;
+    height: 64px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 500;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+}
+
+
+.b1:hover{
+    background: #ffc840;
+    color: #17002d;
+    border-color: #ffc840;
+}
+
+.b2:hover{
+    color: white;
+    background: transparent;
+    border-color: #d1006e;
+}
+
+.description{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.slogan{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 1100px;
+    width: 60%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    font-size: 24px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.slogan p{
+    margin: 0;
+}
+
+.box{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    display: flex;              
+    justify-content: center;   
+    gap: 50px;  
+    margin-bottom: 20px;  
+    margin-top: 20px;      
+}
+
+
+.logo{
+    margin: 0px;
+    padding: 0px;
+}
+
+@media screen and (max-width: 1230px) {
+  .bb {
+    gap: 15px;
+    flex-direction: column;
+  }
+
+.slogan {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 1100px;
+    width: 100%;
+    /* word-wrap: break-word; */
+    overflow-wrap: break-word;
+    margin: 0 auto;
+    font-size: 24px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+  .PositionImg img {
+    position: absolute;
+    top: 110px;
+    width: 40%;
+    height: 40%;
+    object-fit: cover;
+    
+}
+
+.slogan p {
+    margin: 0;
+    width: 100%;
+    font-size: 20px;
+}
+
+.b1 {
+    color: #FFC840;
+    border: solid 3px #FFC840;
+    background-color: transparent;
+    justify-self: center;
+    width: 100%;
+    height: 50%;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 16px 56px;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+}
+
+.b2 {
+    color: white;
+    border: solid 3px #d1006e;
+    background-color: #d1006e;
+    justify-self: center;
+    width: 100%;
+    height: 50%;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 50px;
+    padding: 16px 56px;
+    transition: all 0.3s ease-in-out;
+}
+
+    .PositionImg img {
+        position: absolute;
+        top: 110px;
+        width: 100%;
+        height: 70%;
+        object-fit: cover;
+    }
+
+    .PositionImg {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 450px;
+    position: relative;
+}
+}
+
+@media  screen and (max-width: 430px) {
+
+    .intro {
+        background-image: none;
+        background-color: rgb(21, 0, 41);
+    }
+
+    .PositionImg img {
+        position: absolute;
+        top: 50px;
+        width: 100%;
+        height: auto;
+        object-fit: cover;    
+    }
+
+    .PositionImg {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        height: 400px;
+        position: relative;
+    }
+    .description {
+        font-size: 24px;
+    }
+    .slogan p {
+        font-size: 16px;
+    }
+
+
+}
+
