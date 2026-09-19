@@ -1,0 +1,136 @@
+---
+# ==========================================
+# PIÈCE 1 : INSTALLATION DOCKER (Noeuds Swarm)
+# ==========================================
+- name: Préparation des noeuds Swarm
+  hosts: role_manager:role_worker
+  become: yes
+  tasks:
+    - name: Installation des dépendances
+      ansible.builtin.apt:
+        name: ['ca-certificates', 'curl', 'gnupg', 'lsb-release']
+        state: present
+        update_cache: yes
+
+    - name: Création du dossier pour la clé GPG
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Ajout de la clé GPG Docker
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Ajout du dépôt Docker
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable"
+        state: present
+
+    - name: Installation de Docker CE
+      ansible.builtin.apt:
+        name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+        state: present
+        update_cache: yes
+
+# ==========================================
+# PIÈCE 2 : INITIALISATION DU CLUSTER SWARM
+# ==========================================
+- name: Configuration du Swarm Manager
+  hosts: role_manager
+  become: yes
+  tasks:
+    - name: Vérifier si Swarm est déjà actif
+      ansible.builtin.command: docker info
+      register: docker_info
+      changed_when: false
+
+    - name: Initialisation du Swarm
+      # On utilise l'IP privée de la machine donnée automatiquement par AWS
+      ansible.builtin.command: "docker swarm init --advertise-addr {{ private_ip_address }}"
+      when: "'Swarm: inactive' in docker_info.stdout"
+
+    - name: Récupération du token pour les workers
+      ansible.builtin.command: docker swarm join-token -q worker
+      register: worker_token
+      changed_when: false
+
+    - name: Mémorisation du token (Variable globale)
+      ansible.builtin.set_fact:
+        swarm_token: "{{ worker_token.stdout }}"
+
+- name: Configuration du Swarm Worker
+  hosts: role_worker
+  become: yes
+  tasks:
+    - name: Vérifier si le Worker est déjà dans un Swarm
+      ansible.builtin.command: docker info
+      register: docker_info_worker
+      changed_when: false
+
+    - name: Le Worker rejoint le cluster
+      ansible.builtin.command: "docker swarm join --token {{ hostvars[groups['role_manager'][0]]['swarm_token'] }} {{ hostvars[groups['role_manager'][0]]['private_ip_address'] }}:2377"
+      when: "'Swarm: inactive' in docker_info_worker.stdout"
+
+# ==========================================
+# PIÈCE 3 : DÉPLOIEMENT DU JEU
+# ==========================================
+- name: Déploiement de l'application
+  hosts: role_manager
+  become: yes
+  tasks:
+    - name: Lancement du service Pokito Poker sur Swarm
+      ansible.builtin.shell: |
+        if docker service ls | grep -q pokito_game; then
+          docker service update --image ghcr.io/lasreex/bloc5_pokito:latest pokito_game
+        else
+          docker service create --name pokito_game -p 80:80 --replicas 2 ghcr.io/lasreex/bloc5_pokito:latest
+        fi
+      args:
+        executable: /bin/bash
+
+# ==========================================
+# PIÈCE 4 : CONFIGURATION HA-PROXY (DMZ)
+# ==========================================
+- name: Configuration du Load Balancer
+  hosts: role_proxy
+  become: yes
+  tasks:
+    - name: Installation de HAProxy
+      ansible.builtin.apt:
+        name: haproxy
+        state: present
+        update_cache: yes
+
+    - name: Injection de la configuration dynamique HAProxy
+      ansible.builtin.copy:
+        dest: /etc/haproxy/haproxy.cfg
+        content: |
+          global
+              log /dev/log local0
+              user haproxy
+              group haproxy
+              daemon
+          defaults
+              log global
+              mode http
+              option httplog
+              timeout connect 5000
+              timeout client  50000
+              timeout server  50000
+          frontend web_front
+              bind *:80
+              default_backend swarm_backend
+          backend swarm_backend
+              balance roundrobin
+              # Ansible injecte ici dynamiquement les IP privées des noeuds Swarm
+              server manager1 {{ hostvars[groups['role_manager'][0]]['private_ip_address'] }}:80 check
+              server worker1 {{ hostvars[groups['role_worker'][0]]['private_ip_address'] }}:80 check
+      notify: Redémarrer HAProxy
+
+  handlers:
+    - name: Redémarrer HAProxy
+      service:
+        name: haproxy
+        state: restarted

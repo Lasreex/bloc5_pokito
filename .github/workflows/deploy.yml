@@ -35,3 +35,17 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+
+      # --- ANSIBLE ---
+
+      - name: Installation des dépendances Ansible et AWS
+        run: |
+          pip install ansible boto3 botocore
+          ansible-galaxy collection install amazon.aws community.aws
+
+      - name: Exécution du Playbook Ansible via AWS SSM
+        env:
+          # On s'assure qu'Ansible n'attend pas de confirmation de clé SSH
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          ansible-playbook -i ansible/inventory.aws_ec2.yml ansible/playbook.yml
