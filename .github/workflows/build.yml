@@ -28,7 +28,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🐳 Build et Push de l'image
+      - name: Build et Push de l'image
         uses: docker/build-push-action@v5
         with:
           context: .
