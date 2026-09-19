@@ -159,7 +159,7 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "haproxy" {
   ami                  = data.aws_ami.ubuntu.id
-  instance_type        = "t2.micro"
+  instance_type        = "t3.micro"
   subnet_id            = aws_subnet.public_dmz.id
   security_groups      = [aws_security_group.sg_haproxy.id]
   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
@@ -169,7 +169,7 @@ resource "aws_instance" "haproxy" {
 
 resource "aws_instance" "swarm_manager" {
   ami                  = data.aws_ami.ubuntu.id
-  instance_type        = "t2.micro"
+  instance_type        = "t3.micro"
   subnet_id            = aws_subnet.private_swarm.id
   security_groups      = [aws_security_group.sg_swarm.id]
   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
@@ -179,7 +179,7 @@ resource "aws_instance" "swarm_manager" {
 
 resource "aws_instance" "swarm_worker" {
   ami                  = data.aws_ami.ubuntu.id
-  instance_type        = "t2.micro"
+  instance_type        = "t3.micro"
   subnet_id            = aws_subnet.private_swarm.id
   security_groups      = [aws_security_group.sg_swarm.id]
   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
