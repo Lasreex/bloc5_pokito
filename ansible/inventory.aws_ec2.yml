@@ -5,6 +5,9 @@ filters:
   instance-state-name: running
   "tag:Name": "pokito-*" # Ne récupère que les machines de notre projet
 
+hostnames:
+  - instance-id
+
 # Classe les machines dans des groupes Ansible basés sur le Tag "Role"
 keyed_groups:
   - key: tags.Role
@@ -15,4 +18,4 @@ compose:
   ansible_connection: "'aws_ssm'"
   ansible_aws_ssm_region: "'eu-west-3'"
   # Utilise l'ID de l'instance (i-0abcd...) comme cible de connexion au lieu de l'IP
-  ansible_host: instance_id
+  #ansible_host: instance_id
