@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "pokito-tf-state-lasreex-250832562692-eu-west-3-an"
+    key    = "infrastructure/terraform.tfstate"
+    region = "eu-west-3"
+  }
+}
+
 provider "aws" {
   region = "eu-west-3" # Paris
 }

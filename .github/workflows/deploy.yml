@@ -1,0 +1,37 @@
+name: 2 - Déploiement Infrastructure (Terraform)
+
+# Le déclencheur : écoute le succès du pipeline de build
+on:
+  workflow_run:
+    workflows: ["1 - Build et Push de l'image Docker"]
+    types:
+      - completed
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    # Sécurité : On ne lance Terraform que si le build précédent a réussi
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Récupération du code (Scripts Terraform)
+        uses: actions/checkout@v4
+
+      - name: Authentification AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::250832562692:role/GitHubActions-Deploy-Role
+          aws-region: eu-west-3
+
+      - name: Installation de Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
