@@ -179,6 +179,9 @@
                 - "3000:3000"
               environment:
                 - GF_SECURITY_ADMIN_PASSWORD=pokitoadmin
+              volumes: 
+                - /opt/monitoring/grafana/provisioning:/etc/grafana/provisioning
+                - /opt/monitoring/grafana/dashboards:/var/lib/grafana/dashboards
               deploy:
                 placement:
                   constraints: [node.role == manager]
