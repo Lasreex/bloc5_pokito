@@ -113,6 +113,7 @@
           datasources:
             - name: Prometheus
               type: prometheus
+              uid: Prometheus
               access: proxy
               url: http://prometheus:9090
               isDefault: true
@@ -133,8 +134,16 @@
 
     - name: Téléchargement du Dashboard Docker (cAdvisor)
       ansible.builtin.get_url:
-        url: https://grafana.com/api/dashboards/193/revisions/4/download
-        dest: /opt/monitoring/grafana/dashboards/docker_overview.json
+        url: https://grafana.com/api/dashboards/14282/revisions/1/download
+        dest: /opt/monitoring/grafana/dashboards/cadvisor.json
+
+    - name: Patch dynamique de la Datasource (Répare les variables)
+      replace:
+        path: /opt/monitoring/grafana/dashboards/cadvisor.json
+        # Cette expression régulière trouve les anciennes liaisons de base de données 
+        # et les force à pointer vers le nouvel identifiant "Prometheus" de Grafana
+        regexp: '(?<="datasource":\s)(?:null|"[^"]+")'
+        replace: '{"type":"prometheus","uid":"Prometheus"}'
 
     - name: Injection de la configuration Prometheus
       ansible.builtin.copy:
