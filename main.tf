@@ -183,7 +183,7 @@ resource "aws_instance" "haproxy" {
 
 resource "aws_instance" "swarm_manager" {
   ami                  = data.aws_ami.ubuntu.id
-  instance_type        = "t3.micro"
+  instance_type        = "t3.small"
   subnet_id            = aws_subnet.private_swarm.id
   vpc_security_group_ids      = [aws_security_group.sg_swarm.id]
   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
