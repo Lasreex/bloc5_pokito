@@ -119,6 +119,13 @@
               timeout connect 5000
               timeout client  50000
               timeout server  50000
+          listen haproxy_stats
+            mode http
+            bind 0.0.0.0:1936       # Le port de debug/stats choisi
+            stats enable
+            stats uri /             # Accessible via http://<IP>:1936/
+            stats refresh 5s        # Rafraîchissement automatique
+            stats auth admin:password
           frontend web_front
               bind *:80
               default_backend swarm_backend
