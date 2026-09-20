@@ -128,8 +128,8 @@
 
     - name: Téléchargement du Dashboard Docker (cAdvisor)
       ansible.builtin.get_url:
-        url: https://grafana.com/api/dashboards/14282/revisions/1/download
-        dest: /opt/monitoring/grafana/dashboards/cadvisor.json
+        url: https://grafana.com/api/dashboards/193/revisions/4/download
+        dest: /opt/monitoring/grafana/dashboards/docker_overview.json
 
     - name: Injection de la configuration Prometheus
       ansible.builtin.copy:
