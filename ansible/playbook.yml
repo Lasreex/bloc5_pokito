@@ -92,8 +92,44 @@
     
     - name: On s'assure que le dossier de monitoring existe
       ansible.builtin.file:
-        path: /opt/monitoring/
+        path: "{{ item }}"
         state: directory
+      loop:
+        - /opt/monitoring/
+        - /opt/monitoring/grafana/provisioning/datasources
+        - /opt/monitoring/grafana/provisioning/dashboards
+        - /opt/monitoring/grafana/dashboards
+
+    - name: Configuration de Grafana (Datasource et Dashboard Provider)
+      ansible.builtin.copy:
+        dest: /opt/monitoring/grafana/provisioning/datasources/prometheus.yml
+        content: |
+          apiVersion: 1
+          datasources:
+            - name: Prometheus
+              type: prometheus
+              access: proxy
+              url: http://prometheus:9090
+              isDefault: true
+
+    - name: Configuration du Provider de Dashboard
+      ansible.builtin.copy:
+        dest: /opt/monitoring/grafana/provisioning/dashboards/provider.yml
+        content: |
+          apiVersion: 1
+          providers:
+            - name: 'Pokito Dashboards'
+              orgId: 1
+              folder: ''
+              type: file
+              disableDeletion: false
+              options:
+                path: /var/lib/grafana/dashboards
+
+    - name: Téléchargement du Dashboard Docker (cAdvisor)
+      ansible.builtin.get_url:
+        url: https://grafana.com/api/dashboards/14282/revisions/1/download
+        dest: /opt/monitoring/grafana/dashboards/cadvisor.json
 
     - name: Injection de la configuration Prometheus
       ansible.builtin.copy:
