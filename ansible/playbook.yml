@@ -89,6 +89,11 @@
         fi
       args:
         executable: /bin/bash
+    
+    - name: On s'assure que le dossier de monitoring existe
+      ansible.builtin.file:
+        path: /opt/monitoring/
+        state: directory
 
     - name: Injection de la configuration Prometheus
       ansible.builtin.copy:
