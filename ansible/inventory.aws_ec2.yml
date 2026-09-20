@@ -17,6 +17,6 @@ keyed_groups:
 compose:
   ansible_connection: "'aws_ssm'"
   ansible_aws_ssm_region: "'eu-west-3'"
-  ansible_aws_ssm_bucket_name: "'pokito-tf-state-lasreex'"
+  ansible_aws_ssm_bucket_name: "'pokito-tf-state-lasreex-250832562692-eu-west-3-an'"
   # Utilise l'ID de l'instance (i-0abcd...) comme cible de connexion au lieu de l'IP
   #ansible_host: instance_id
