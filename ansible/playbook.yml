@@ -125,7 +125,7 @@
             stats enable
             stats uri /             # Accessible via http://<IP>:1936/
             stats refresh 5s        # Rafraîchissement automatique
-            stats auth admin:password
+            stats auth admin_lulu:admin_lucas
           frontend web_front
               bind *:80
               default_backend swarm_backend
