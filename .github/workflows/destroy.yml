@@ -1,0 +1,39 @@
+name: Terraform Destroy (FinOps)
+
+# Déclenchement manuel uniquement (le fameux "bouton")
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  destroy-infra:
+    name: Destruction de l'infrastructure
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Authentification AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::250832562692:role/github-actions-role
+          aws-region: eu-west-3
+
+      - name: Installation de Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.0"
+
+      - name: Terraform Init
+        run: terraform init
+
+      # La commande magique qui supprime tout
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
