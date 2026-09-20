@@ -74,7 +74,7 @@
       when: "'Swarm: inactive' in docker_info_worker.stdout"
 
 # ==========================================
-# PIÈCE 3 : DÉPLOIEMENT DU JEU
+# PIÈCE 3 : DÉPLOIEMENT DU JEU & MONITORING (Noeuds Swarm)
 # ==========================================
 - name: Déploiement de l'application
   hosts: role_manager
@@ -89,6 +89,82 @@
         fi
       args:
         executable: /bin/bash
+
+    - name: Injection de la configuration Prometheus
+      ansible.builtin.copy:
+        dest: /opt/monitoring/prometheus.yml
+        content: |
+          global:
+            scrape_interval: 15s
+          
+          scrape_configs:
+            - job_name: 'prometheus'
+              static_configs:
+                - targets: ['localhost:9090']
+            
+            # Découverte automatique des agents système (Node Exporter)
+            - job_name: 'node_exporter'
+              dns_sd_configs:
+                - names: ['tasks.node_exporter']
+                  type: 'A'
+                  port: 9100
+            
+            # Découverte automatique des agents conteneurs (cAdvisor)
+            - job_name: 'cadvisor'
+              dns_sd_configs:
+                - names: ['tasks.cadvisor']
+                  type: 'A'
+                  port: 8080
+
+    - name: Injection de la stack Docker Compose Monitoring
+      ansible.builtin.copy:
+        dest: /opt/monitoring/docker-compose.yml
+        content: |
+          version: '3.8'
+          services:
+            prometheus:
+              image: prom/prometheus:latest
+              volumes:
+                - /opt/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+              ports:
+                - "9090:9090"
+              deploy:
+                placement:
+                  constraints: [node.role == manager]
+            
+            grafana:
+              image: grafana/grafana:latest
+              ports:
+                - "3000:3000"
+              environment:
+                - GF_SECURITY_ADMIN_PASSWORD=pokitoadmin
+              deploy:
+                placement:
+                  constraints: [node.role == manager]
+            
+            # L'agent Système (Déployé sur TOUS les noeuds)
+            node_exporter:
+              image: prom/node-exporter:latest
+              volumes:
+                - /proc:/host/proc:ro
+                - /sys:/host/sys:ro
+                - /:/rootfs:ro
+              command:
+                - '--path.procfs=/host/proc'
+                - '--path.sysfs=/host/sys'
+              deploy:
+                mode: global
+            
+            # L'agent Conteneur (Déployé sur TOUS les noeuds)
+            cadvisor:
+              image: gcr.io/cadvisor/cadvisor:latest
+              volumes:
+                - /:/rootfs:ro
+                - /var/run:/var/run:ro
+                - /sys:/sys:ro
+                - /var/lib/docker/:/var/lib/docker:ro
+              deploy:
+                mode: global
 
 # ==========================================
 # PIÈCE 4 : CONFIGURATION HA-PROXY (DMZ)
