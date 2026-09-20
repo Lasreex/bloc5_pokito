@@ -170,6 +170,9 @@
                 - /var/lib/docker/:/var/lib/docker:ro
               deploy:
                 mode: global
+      
+    - name: Lancement de la stack Monitoring sur Swarm
+      command: docker stack deploy -c /opt/monitoring/docker-compose.yml monitoring
 
 # ==========================================
 # PIÈCE 4 : CONFIGURATION HA-PROXY (DMZ)
