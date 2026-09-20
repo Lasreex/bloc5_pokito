@@ -99,6 +99,11 @@
         - /opt/monitoring/grafana/provisioning/datasources
         - /opt/monitoring/grafana/provisioning/dashboards
         - /opt/monitoring/grafana/dashboards
+      
+    - name: Nettoyage de l'ancien Dashboard cAdvisor
+      ansible.builtin.file:
+        path: /opt/monitoring/grafana/dashboards/cadvisor.json
+        state: absent
 
     - name: Configuration de Grafana (Datasource et Dashboard Provider)
       ansible.builtin.copy:
