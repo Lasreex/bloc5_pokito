@@ -210,6 +210,12 @@
               # Ansible injecte ici dynamiquement les IP privées des noeuds Swarm
               server manager1 {{ hostvars[groups['role_manager'][0]]['private_ip_address'] }}:80 check
               server worker1 {{ hostvars[groups['role_worker'][0]]['private_ip_address'] }}:80 check
+          frontend grafana_front
+              bind *:3000
+              default_backend grafana_backend
+          backend grafana_backend
+              balance roundrobin
+              server manager1 {{ hostvars[groups['role_manager'][0]]['private_ip_address'] }}:3000 check
       notify: Redémarrer HAProxy
 
   handlers:
