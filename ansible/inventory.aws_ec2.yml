@@ -6,7 +6,6 @@ filters:
   "tag:Name": "pokito-*" # Ne récupère que les machines de notre projet
 
 hostnames:
-ansible_host:
   - tag:Name
   - instance-id
 

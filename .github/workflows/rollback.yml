@@ -1,4 +1,4 @@
-name: ⏪ Rollback Pokito
+name: Rollback Pokito
 
 on:
   workflow_dispatch:
