@@ -282,12 +282,12 @@ resource "aws_lb_target_group_attachment" "grafana_worker" {
 }
 
 # --- OUTPUTS ---
-output "1_application_url" {
+output "application_url" {
   description = "Lien direct vers le jeu Pokito via AWS ALB"
   value       = "http://${aws_lb.pokito_alb.dns_name}"
 }
 
-output "2_grafana_url" {
+output "grafana_url" {
   description = "Lien direct vers Grafana via AWS ALB"
   value       = "http://${aws_lb.pokito_alb.dns_name}:3000"
 }
