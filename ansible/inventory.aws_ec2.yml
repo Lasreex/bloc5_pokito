@@ -6,7 +6,7 @@ filters:
   "tag:Name": "pokito-*" # Ne récupère que les machines de notre projet
 
 hostnames:
-  - tag:Name
+  # - tag:Name
   - instance-id
 
 # Classe les machines dans des groupes Ansible basés sur le Tag "Role"
