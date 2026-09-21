@@ -37,6 +37,7 @@ resource "aws_subnet" "public_dmz_2" {
 resource "aws_subnet" "private_swarm" {
   vpc_id                  = aws_vpc.pokito_vpc.id
   cidr_block              = "10.0.2.0/24"
+  availability_zone       = "eu-west-3b"
   map_public_ip_on_launch = false # Sécurité : Aucune IP publique
   tags = { Name = "pokito-private-swarm" }
 }
