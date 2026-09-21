@@ -36,6 +36,11 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
 
+      # --- Pause ---
+
+      - name: Attente de l'initialisation des agents AWS SSM
+        run: sleep 90
+
       # --- ANSIBLE ---
 
       - name: Installation du plugin AWS Session Manager

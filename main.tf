@@ -240,6 +240,13 @@ resource "aws_lb_target_group" "tg_grafana" {
   port     = 3000
   protocol = "HTTP"
   vpc_id   = aws_vpc.pokito_vpc.id
+
+  health_check {
+    path                = "/api/health"  # L'API officielle de santé de Grafana
+    matcher             = "200"          # Cette API renvoie toujours un code 200 propre
+    interval            = 30
+    timeout             = 5
+  }
 }
 
 # Les "Listeners"
@@ -278,10 +285,10 @@ resource "aws_lb_target_group_attachment" "grafana_manager" {
   target_group_arn = aws_lb_target_group.tg_grafana.arn
   target_id        = aws_instance.swarm_manager.id
 }
-resource "aws_lb_target_group_attachment" "grafana_worker" {
-  target_group_arn = aws_lb_target_group.tg_grafana.arn
-  target_id        = aws_instance.swarm_worker.id
-}
+# resource "aws_lb_target_group_attachment" "grafana_worker" {
+#   target_group_arn = aws_lb_target_group.tg_grafana.arn
+#   target_id        = aws_instance.swarm_worker.id
+# }
 
 # --- OUTPUTS ---
 output "application_url" {
