@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   build:
+    name: Build et Push de l'image Docker
     runs-on: ubuntu-latest
     steps:
       - name: Récupération du code
