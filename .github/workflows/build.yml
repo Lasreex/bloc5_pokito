@@ -1,4 +1,4 @@
-name: 1 - Build et Push de l'image Docker
+name: Build et Push de l'image Docker + Déploiement Infrastructure (Terraform)
 
 on:
   push:
@@ -35,3 +35,49 @@ jobs:
           tags: |
             ghcr.io/lasreex/bloc5_pokito:latest
             ghcr.io/lasreex/bloc5_pokito:v1.${{ github.run_number }}
+
+  deploy:
+    name: Déploiement AWS & Swarm
+    needs: build # Ce job attend la fin de 'build'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code (Scripts Terraform)
+        uses: actions/checkout@v4
+
+      - name: Authentification AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::250832562692:role/GitHubActions-Deploy-Role
+          aws-region: eu-west-3
+
+      - name: Installation de Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      # --- Pause ---
+
+      - name: Attente de l'initialisation des agents AWS SSM
+        run: sleep 90
+
+      # --- ANSIBLE ---
+
+      - name: Installation du plugin AWS Session Manager
+        run: |
+          curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+          sudo dpkg -i session-manager-plugin.deb
+
+      - name: Installation des dépendances Ansible et AWS
+        run: |
+          pip install --upgrade pip "boto3>=1.35.0" "botocore>=1.35.0" ansible
+          ansible-galaxy collection install amazon.aws community.aws
+
+      - name: Exécution du Playbook Ansible via AWS SSM
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          ansible-playbook -i ansible/inventory.aws_ec2.yml ansible/playbook.yml -e "target_version=v1.${{ github.run_number }}"
