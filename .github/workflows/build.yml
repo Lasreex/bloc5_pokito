@@ -26,9 +26,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build et Push de l'image
+      - name: Build et Push de l'image (Versionné)
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ghcr.io/lasreex/bloc5_pokito:latest
+          # On génère deux tags d'un coup grâce au '|' (multiligne) : latest ET v{numero_du_pipeline}
+          tags: |
+            ghcr.io/lasreex/bloc5_pokito:latest
+            ghcr.io/lasreex/bloc5_pokito:v${{ github.run_number }}

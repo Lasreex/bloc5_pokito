@@ -1,0 +1,41 @@
+name: ⏪ Rollback Pokito
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_version:
+        description: "Tag de l'image à restaurer (ex: v1.2.0, old-stable)"
+        required: true
+        default: '1.0.0'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  rollback:
+    name: Rollback Applicatif
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Authentification AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::250832562692:role/GitHubActions-Deploy-Role
+          aws-region: eu-west-3
+
+      - name: Installation d'Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible python3-pip
+          pip3 install boto3 botocore
+
+      - name: Déclenchement du Rollback via Ansible Ad-Hoc
+        # On utilise une commande Ad-Hoc (-m command) ciblée uniquement sur le Swarm Manager
+        run: |
+          ansible role_manager -i ansible/inventory.aws_ec2.yml \
+            -m command \
+            -a "docker service update --image bloc5_pokito:${{ github.event.inputs.image_version }} pokito_game"
