@@ -20,8 +20,18 @@ resource "aws_vpc" "pokito_vpc" {
 resource "aws_subnet" "public_dmz" {
   vpc_id                  = aws_vpc.pokito_vpc.id
   cidr_block              = "10.0.1.0/24"
+  availability_zone       = "eu-west-3a"
   map_public_ip_on_launch = true # IP publique auto
   tags = { Name = "pokito-public-dmz" }
+}
+
+# Le 2ème sous-réseau public pour l'ALB AWS
+resource "aws_subnet" "public_dmz_2" {
+  vpc_id                  = aws_vpc.pokito_vpc.id
+  cidr_block              = "10.0.3.0/24"
+  availability_zone       = "eu-west-3b"
+  map_public_ip_on_launch = true
+  tags                    = { Name = "pokito-public-dmz-2" }
 }
 
 resource "aws_subnet" "private_swarm" {
@@ -29,15 +39,6 @@ resource "aws_subnet" "private_swarm" {
   cidr_block              = "10.0.2.0/24"
   map_public_ip_on_launch = false # Sécurité : Aucune IP publique
   tags = { Name = "pokito-private-swarm" }
-}
-
-# Le 2ème sous-réseau public obligatoire pour l'ALB AWS
-resource "aws_subnet" "public_dmz_2" {
-  vpc_id                  = aws_vpc.pokito_vpc.id
-  cidr_block              = "10.0.3.0/24"
-  availability_zone       = "eu-west-3b" # Zone B différente de la Zone A !
-  map_public_ip_on_launch = true
-  tags                    = { Name = "pokito-public-dmz-2" }
 }
 
 # --- PASSERELLES ET ROUTAGE ---
