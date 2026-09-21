@@ -1,4 +1,4 @@
-name: Terraform Destroy (FinOps)
+name: Terraform Destroy
 
 # Déclenchement manuel uniquement (le fameux "bouton")
 on:
