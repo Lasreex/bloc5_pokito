@@ -83,9 +83,9 @@
     - name: Lancement du service Pokito Poker sur Swarm
       ansible.builtin.shell: |
         if docker service ls | grep -q pokito_game; then
-          docker service update --image ghcr.io/lasreex/bloc5_pokito:latest pokito_game
+          docker service update --image ghcr.io/lasreex/bloc5_pokito:{{ target_version }} pokito_game
         else
-          docker service create --name pokito_game -p 80:80 --replicas 2 ghcr.io/lasreex/bloc5_pokito:latest
+          docker service create --name pokito_game -p 80:80 --replicas 2 ghcr.io/lasreex/bloc5_pokito:{{ target_version }}
         fi
       args:
         executable: /bin/bash

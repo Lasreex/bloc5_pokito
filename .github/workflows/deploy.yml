@@ -57,4 +57,4 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
-          ansible-playbook -i ansible/inventory.aws_ec2.yml ansible/playbook.yml
+          ansible-playbook -i ansible/inventory.aws_ec2.yml ansible/playbook.yml -e "target_version=v1.${{ github.run_number }}"
