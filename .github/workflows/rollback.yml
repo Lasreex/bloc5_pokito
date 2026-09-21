@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       image_version:
-        description: "Tag de l'image à restaurer (ex: v1.2.0, old-stable)"
+        description: "Tag de l'image à restaurer (ex: v1.31)"
         required: true
-        default: '1.0.0'
+        default: 'v1.30'
 
 permissions:
   id-token: write
