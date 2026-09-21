@@ -31,6 +31,15 @@ resource "aws_subnet" "private_swarm" {
   tags = { Name = "pokito-private-swarm" }
 }
 
+# Le 2ème sous-réseau public obligatoire pour l'ALB AWS
+resource "aws_subnet" "public_dmz_2" {
+  vpc_id                  = aws_vpc.pokito_vpc.id
+  cidr_block              = "10.0.3.0/24"
+  availability_zone       = "eu-west-3b" # Zone B différente de la Zone A !
+  map_public_ip_on_launch = true
+  tags                    = { Name = "pokito-public-dmz-2" }
+}
+
 # --- PASSERELLES ET ROUTAGE ---
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.pokito_vpc.id
@@ -58,6 +67,11 @@ resource "aws_route_table_association" "public_assoc" {
   route_table_id = aws_route_table.public_rt.id
 }
 
+resource "aws_route_table_association" "public_assoc_2" {
+  subnet_id      = aws_subnet.public_dmz_2.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
 resource "aws_route_table" "private_rt" {
   vpc_id = aws_vpc.pokito_vpc.id
   route {
@@ -74,8 +88,8 @@ resource "aws_route_table_association" "private_assoc" {
 
 ################################### --- SECURITY GROUPS --- #######################################
 
-resource "aws_security_group" "sg_haproxy" {
-  name        = "pokito-sg-haproxy"
+resource "aws_security_group" "sg_alb" {
+  name        = "pokito-sg-alb"
   description = "Autorise HTTP entrant"
   vpc_id      = aws_vpc.pokito_vpc.id
 
@@ -86,12 +100,12 @@ resource "aws_security_group" "sg_haproxy" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port   = 1936
-    to_port     = 1936
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # ingress {
+  #   from_port   = 1936
+  #   to_port     = 1936
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   ingress {
     from_port   = 3000
@@ -117,7 +131,7 @@ resource "aws_security_group" "sg_swarm" {
     from_port       = 0
     to_port         = 0
     protocol        = "-1"
-    security_groups = [aws_security_group.sg_haproxy.id]
+    security_groups = [aws_security_group.sg_alb.id]
   }
 
   ingress {
@@ -171,15 +185,15 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-resource "aws_instance" "haproxy" {
-  ami                  = data.aws_ami.ubuntu.id
-  instance_type        = "t3.micro"
-  subnet_id            = aws_subnet.public_dmz.id
-  vpc_security_group_ids      = [aws_security_group.sg_haproxy.id]
-  iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
+# resource "aws_instance" "haproxy" {
+#   ami                  = data.aws_ami.ubuntu.id
+#   instance_type        = "t3.micro"
+#   subnet_id            = aws_subnet.public_dmz.id
+#   vpc_security_group_ids      = [aws_security_group.sg_alb.id]
+#   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
 
-  tags = { Name = "pokito-haproxy", Role = "proxy" }
-}
+#   tags = { Name = "pokito-haproxy", Role = "proxy" }
+# }
 
 resource "aws_instance" "swarm_manager" {
   ami                  = data.aws_ami.ubuntu.id
@@ -201,8 +215,79 @@ resource "aws_instance" "swarm_worker" {
   tags = { Name = "pokito-swarm-worker", Role = "worker" }
 }
 
+############################ --- AWS ALB --- #############################
+
+resource "aws_lb" "pokito_alb" {
+  name               = "pokito-alb"
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.sg_alb.id]
+  subnets            = [aws_subnet.public_dmz.id, aws_subnet.public_dmz_2.id]
+}
+
+# Les "Target Groups"
+
+resource "aws_lb_target_group" "tg_game" {
+  name     = "pokito-game-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.pokito_vpc.id
+}
+
+resource "aws_lb_target_group" "tg_grafana" {
+  name     = "pokito-grafana-tg"
+  port     = 3000
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.pokito_vpc.id
+}
+
+# Les "Listeners"
+
+resource "aws_lb_listener" "http_game" {
+  load_balancer_arn = aws_lb.pokito_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.tg_game.arn
+  }
+}
+
+resource "aws_lb_listener" "http_grafana" {
+  load_balancer_arn = aws_lb.pokito_alb.arn
+  port              = 3000
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.tg_grafana.arn
+  }
+}
+
+# L'attachement dynamique
+
+resource "aws_lb_target_group_attachment" "game_manager" {
+  target_group_arn = aws_lb_target_group.tg_game.arn
+  target_id        = aws_instance.swarm_manager.id
+}
+resource "aws_lb_target_group_attachment" "game_worker" {
+  target_group_arn = aws_lb_target_group.tg_game.arn
+  target_id        = aws_instance.swarm_worker.id
+}
+resource "aws_lb_target_group_attachment" "grafana_manager" {
+  target_group_arn = aws_lb_target_group.tg_grafana.arn
+  target_id        = aws_instance.swarm_manager.id
+}
+resource "aws_lb_target_group_attachment" "grafana_worker" {
+  target_group_arn = aws_lb_target_group.tg_grafana.arn
+  target_id        = aws_instance.swarm_worker.id
+}
+
 # --- OUTPUTS ---
-output "haproxy_public_ip" {
-  description = "IP publique pour accéder au site"
-  value       = aws_instance.haproxy.public_ip
+output "1_application_url" {
+  description = "Lien direct vers le jeu Pokito via AWS ALB"
+  value       = "http://${aws_lb.pokito_alb.dns_name}"
+}
+
+output "2_grafana_url" {
+  description = "Lien direct vers Grafana via AWS ALB"
+  value       = "http://${aws_lb.pokito_alb.dns_name}:3000"
 }

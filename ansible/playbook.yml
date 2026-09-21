@@ -230,57 +230,57 @@
 # ==========================================
 # PIÈCE 4 : CONFIGURATION HA-PROXY (DMZ)
 # ==========================================
-- name: Configuration du Load Balancer
-  hosts: role_proxy
-  become: yes
-  tasks:
-    - name: Installation de HAProxy
-      ansible.builtin.apt:
-        name: haproxy
-        state: present
-        update_cache: yes
+# - name: Configuration du Load Balancer
+#   hosts: role_proxy
+#   become: yes
+#   tasks:
+#     - name: Installation de HAProxy
+#       ansible.builtin.apt:
+#         name: haproxy
+#         state: present
+#         update_cache: yes
 
-    - name: Injection de la configuration dynamique HAProxy
-      ansible.builtin.copy:
-        dest: /etc/haproxy/haproxy.cfg
-        content: |
-          global
-              log /dev/log local0
-              user haproxy
-              group haproxy
-              daemon
-          defaults
-              log global
-              mode http
-              option httplog
-              timeout connect 5000
-              timeout client  50000
-              timeout server  50000
-          listen haproxy_stats
-            mode http
-            bind 0.0.0.0:1936       # Le port de debug/stats choisi
-            stats enable
-            stats uri /             # Accessible via http://<IP>:1936/
-            stats refresh 5s        # Rafraîchissement automatique
-            stats auth admin_lulu:admin_lucas
-          frontend web_front
-              bind *:80
-              default_backend swarm_backend
-          backend swarm_backend
-              balance roundrobin
-              # Ansible injecte ici dynamiquement les IP privées des noeuds Swarm
-              server manager1 {{ hostvars[groups['role_manager'][0]]['private_ip_address'] }}:80 check
-              server worker1 {{ hostvars[groups['role_worker'][0]]['private_ip_address'] }}:80 check
-          frontend grafana_front
-              bind *:3000
-              default_backend grafana_backend
-          backend grafana_backend
-              balance roundrobin
-              server manager1 {{ hostvars[groups['role_manager'][0]]['private_ip_address'] }}:3000 check
-      notify: Redémarrer HAProxy
+#     - name: Injection de la configuration dynamique HAProxy
+#       ansible.builtin.copy:
+#         dest: /etc/haproxy/haproxy.cfg
+#         content: |
+#           global
+#               log /dev/log local0
+#               user haproxy
+#               group haproxy
+#               daemon
+#           defaults
+#               log global
+#               mode http
+#               option httplog
+#               timeout connect 5000
+#               timeout client  50000
+#               timeout server  50000
+#           listen haproxy_stats
+#             mode http
+#             bind 0.0.0.0:1936       # Le port de debug/stats choisi
+#             stats enable
+#             stats uri /             # Accessible via http://<IP>:1936/
+#             stats refresh 5s        # Rafraîchissement automatique
+#             stats auth admin_lulu:admin_lucas
+#           frontend web_front
+#               bind *:80
+#               default_backend swarm_backend
+#           backend swarm_backend
+#               balance roundrobin
+#               # Ansible injecte ici dynamiquement les IP privées des noeuds Swarm
+#               server manager1 {{ hostvars[groups['role_manager'][0]]['private_ip_address'] }}:80 check
+#               server worker1 {{ hostvars[groups['role_worker'][0]]['private_ip_address'] }}:80 check
+#           frontend grafana_front
+#               bind *:3000
+#               default_backend grafana_backend
+#           backend grafana_backend
+#               balance roundrobin
+#               server manager1 {{ hostvars[groups['role_manager'][0]]['private_ip_address'] }}:3000 check
+#       notify: Redémarrer HAProxy
 
-  handlers:
-    - name: Redémarrer HAProxy
-      service:
-        name: haproxy
-        state: restarted
+#   handlers:
+#     - name: Redémarrer HAProxy
+#       service:
+#         name: haproxy
+#         state: restarted
