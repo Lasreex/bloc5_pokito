@@ -34,6 +34,16 @@
         state: present
         update_cache: yes
 
+    - name: On s'assure que le dossier de monitoring existe
+      ansible.builtin.file:
+        path: "/opt/monitoring/"
+        state: directory
+
+    - name: Copie de la configuration Grafana Alloy
+      ansible.builtin.copy:
+        src: files/config.alloy
+        dest: /opt/monitoring/config.alloy
+
 # ==========================================
 # PIÈCE 2 : INITIALISATION DU CLUSTER SWARM
 # ==========================================
@@ -100,10 +110,10 @@
         - /opt/monitoring/grafana/provisioning/dashboards
         - /opt/monitoring/grafana/dashboards
       
-    - name: Nettoyage de l'ancien Dashboard cAdvisor
-      ansible.builtin.file:
-        path: /opt/monitoring/grafana/dashboards/cadvisor.json
-        state: absent
+    # - name: Nettoyage de l'ancien Dashboard cAdvisor
+    #   ansible.builtin.file:
+    #     path: /opt/monitoring/grafana/dashboards/cadvisor.json
+    #     state: absent
 
     - name: Configuration de Grafana (Datasource et Dashboard Provider)
       ansible.builtin.copy:
@@ -116,6 +126,19 @@
               uid: Prometheus
               access: proxy
               url: http://prometheus:9090
+              isDefault: true
+
+    - name: Configuration de Loki (Datasource et Dashboard Provider)
+      ansible.builtin.copy:
+        dest: /opt/monitoring/grafana/provisioning/datasources/loki.yml
+        content: |
+          apiVersion: 1
+          datasources:
+            - name: Loki
+              type: loki
+              uid: Loki
+              access: proxy
+              url: http://loki:3100
               isDefault: true
 
     - name: Configuration du Provider de Dashboard
@@ -144,6 +167,19 @@
         # et les force à pointer vers le nouvel identifiant "Prometheus" de Grafana
         regexp: '(?<="datasource":\s)(?:null|"[^"]+")'
         replace: '{"type":"prometheus","uid":"Prometheus"}'
+
+    - name: Téléchargement du Dashboard Docker (Loki)
+      ansible.builtin.get_url:
+        url: https://grafana.com/api/dashboards/13639/revisions/1/download
+        dest: /opt/monitoring/grafana/dashboards/loki.json
+
+    - name: Patch dynamique de la Datasource (Répare les variables)
+      replace:
+        path: /opt/monitoring/grafana/dashboards/loki.json
+        # Cette expression régulière trouve les anciennes liaisons de base de données 
+        # et les force à pointer vers le nouvel identifiant "Loki" de Grafana
+        regexp: '(?<="datasource":\s)(?:null|"[^"]+")'
+        replace: '{"type":"loki","uid":"Loki"}'
 
     - name: Injection de la configuration Prometheus
       ansible.builtin.copy:
@@ -243,11 +279,6 @@
               command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
               deploy:
                 mode: global
-
-    - name: Copie de la configuration Grafana Alloy
-      ansible.builtin.copy:
-        src: files/config.alloy
-        dest: /opt/monitoring/config.alloy
       
     - name: Lancement de la stack Monitoring sur Swarm
       command: docker stack deploy -c /opt/monitoring/docker-compose.yml monitoring
