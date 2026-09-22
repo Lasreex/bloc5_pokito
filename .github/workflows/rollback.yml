@@ -29,9 +29,11 @@ jobs:
 
       - name: Installation d'Ansible
         run: |
-          sudo apt update
-          sudo apt install -y ansible python3-pip
-          pip3 install boto3 botocore
+          pipx inject ansible-core boto3 botocore
+          ansible-galaxy collection install amazon.aws
+# sudo apt update
+# sudo apt install -y ansible python3-pip
+# pip3 install boto3 botocore
 
       - name: Déclenchement du Rollback via Ansible Ad-Hoc
         # On utilise une commande Ad-Hoc (-m command) ciblée uniquement sur le Swarm Manager
