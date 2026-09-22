@@ -3,14 +3,28 @@ discovery.docker "containers" {
   host = "unix:///var/run/docker.sock"
 }
 
-// 2. Nettoyage : enlève le slash "/" parasite devant le nom du conteneur
+// 2. Normalisation des étiquettes (Relabeling)
 discovery.relabel "containers" {
   targets = discovery.docker.containers.targets
 
+  // Règle A : Nettoyer le nom du conteneur (enlève le slash parasite)
   rule {
     source_labels = ["__meta_docker_container_name"]
     regex         = "/(.*)"
     target_label  = "container"
+  }
+
+  // Règle B : Injecter l'étiquette 'job' pour débloquer le Dashboard 13639 !
+  rule {
+    target_label = "job"
+    replacement  = "docker"
+  }
+
+  // Règle C (Bonus Architecte) : Récupérer le vrai nom du service Swarm
+  // Cela transformera "pokito_game.1.7vl7..." en un beau "pokito_game"
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_swarm_service_name"]
+    target_label  = "swarm_service"
   }
 }
 
