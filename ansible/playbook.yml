@@ -200,6 +200,16 @@
                 placement:
                   constraints: [node.role == manager]
             
+            loki:
+              image: grafana/loki:latest
+              ports:
+                - "3100:3100"
+              command: -config.file=/etc/loki/local-config.yaml
+              deploy:
+                placement:
+                  constraints:
+                    - node.role == manager # Loki reste sur le manager
+            
             # L'agent Système (Déployé sur TOUS les noeuds)
             node_exporter:
               image: prom/node-exporter:latest
@@ -223,6 +233,21 @@
                 - /var/lib/docker/:/var/lib/docker:ro
               deploy:
                 mode: global
+            
+            alloy:
+              image: grafana/alloy:latest
+              volumes:
+                # Permet à Alloy de parler directement au moteur Docker
+                - /var/run/docker.sock:/var/run/docker.sock:ro
+                - /opt/monitoring/config.alloy:/etc/alloy/config.alloy:ro
+              command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+              deploy:
+                mode: global
+
+    - name: Copie de la configuration Grafana Alloy
+      ansible.builtin.copy:
+        src: files/config.alloy
+        dest: /opt/monitoring/config.alloy
       
     - name: Lancement de la stack Monitoring sur Swarm
       command: docker stack deploy -c /opt/monitoring/docker-compose.yml monitoring
