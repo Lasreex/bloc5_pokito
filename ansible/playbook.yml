@@ -139,7 +139,7 @@
               uid: Loki
               access: proxy
               url: http://loki:3100
-              isDefault: true
+              isDefault: false
 
     - name: Configuration du Provider de Dashboard
       ansible.builtin.copy:
@@ -271,6 +271,7 @@
                 mode: global
             
             alloy:
+              user: root
               image: grafana/alloy:latest
               volumes:
                 # Permet à Alloy de parler directement au moteur Docker
