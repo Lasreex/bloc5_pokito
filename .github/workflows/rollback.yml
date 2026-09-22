@@ -43,6 +43,6 @@ jobs:
       - name: Déclenchement du Rollback via Ansible Ad-Hoc
         # On utilise une commande Ad-Hoc (-m command) ciblée uniquement sur le Swarm Manager
         run: |
-          ansible role_manager -i ansible/inventory.aws_ec2.yml \
+          ansible role_manager -b -i ansible/inventory.aws_ec2.yml \
             -m command \
             -a "docker service update --image bloc5_pokito:${{ github.event.inputs.image_version }} pokito_game"
