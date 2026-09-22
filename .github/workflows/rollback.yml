@@ -36,13 +36,10 @@ jobs:
         run: |
           pip install --upgrade pip "boto3>=1.35.0" "botocore>=1.35.0" ansible
           ansible-galaxy collection install amazon.aws community.aws
-# sudo apt update
-# sudo apt install -y ansible python3-pip
-# pip3 install boto3 botocore
 
       - name: Déclenchement du Rollback via Ansible Ad-Hoc
         # On utilise une commande Ad-Hoc (-m command) ciblée uniquement sur le Swarm Manager
         run: |
           ansible role_manager -b -i ansible/inventory.aws_ec2.yml \
             -m command \
-            -a "docker service update --image bloc5_pokito:${{ github.event.inputs.image_version }} pokito_game"
+            -a "docker service update --image ghcr.io/lasreex/bloc5_pokito:${{ github.event.inputs.image_version }} --with-registry-auth pokito_game"
