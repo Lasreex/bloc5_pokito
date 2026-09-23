@@ -5,7 +5,7 @@
 L'ensemble de l'infrastructure et des déploiements applicatifs de Pokito est automatisé via des workflows GitHub Actions. Cette architecture GitOps est conçue pour garantir la haute disponibilité, la sécurité (modèle Zero Trust) et l'optimisation des coûts cloud (FinOps).
 
 ### 1. Intégration et Déploiement Continus (`build.yml`)
-**Déclencheur :** Automatique à chaque `push` sur la branche `main`.  
+**Déclencheur :** Automatique à chaque `push` sur la branche `main` qui modifie le site (`website/`).  
 **Rôle :** Pipeline unifié gérant le cycle de vie complet de l'application, de la compilation du code jusqu'au déploiement en production.
 
 * **Authentification Secretless (OIDC) :** Le pipeline s'authentifie auprès d'AWS via des jetons temporaires, respectant le principe du moindre privilège (aucune clé statique stockée).
